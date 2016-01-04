@@ -12,14 +12,19 @@ module.exports = {
     var end;
 
     //parse range
-    if(timerange.indexOf('to' > 0)){
+    if(timerange.indexOf('to') >= 0){
       timerange = timerange.replace('to', '-');
     }
-    if(timerange.indexOf('-') > 0){
+    if(timerange.indexOf('-') >= 0){
       var times = timerange.split('-');
       begin = times[0].trim();
       end = times[1].trim();
+    } else {
+      begin = timerange.trim();
     }
+
+    begin = begin || '';
+    end = end || '';
 
     //cleanup inputs
     var beginAntepost = this.parseAntepost(begin);
@@ -27,8 +32,8 @@ module.exports = {
     var beginTime = this.parseTime(begin);
     var endTime = this.parseTime(end);
 
-    if(this.parseAntepost(begin) == ''){
-      if(endAntepost == ''){
+    if(beginTime && beginAntepost == ''){
+      if(endAntepost == '' && endTime != ''){
         endAntepost = 'AM';
         end += endAntepost;
       }
@@ -43,8 +48,8 @@ module.exports = {
       }
     }
 
-    output.begin = beginTime + ' ' + beginAntepost;
-    output.end = endTime + ' ' + endAntepost;
+    output.begin = (beginTime + ' ' + beginAntepost).trim();
+    output.end = (endTime + ' ' + endAntepost).trim();
 
     return output;
   },
@@ -72,9 +77,13 @@ module.exports = {
    */
   parseTime: function(timestring){
     var timeRE= /[0-9:]+/;
-    var time = timeRE.exec(timestring)[0] || '';
-    if(time.indexOf(':') == -1){
-      time = time.replace(time, time + ':00');
+    var timeResult = timeRE.exec(timestring);
+    var time = '';
+    if(timeResult && timeResult.length > 0){
+      time = timeRE.exec(timestring)[0] || '';
+      if(time.indexOf(':') == -1){
+        time = time.replace(time, time + ':00');
+      }
     }
     return time;
   },
@@ -87,7 +96,7 @@ module.exports = {
   parseHour: function(timestring){
     var hourRE= /(^[0-1]?[1-9:]+):/;
     var answer = hourRE.exec(timestring);
-    return answer.length > 1 ? answer[1] : '';
+    return (answer && answer.length > 1) ? answer[1] : '';
   }
 
 

@@ -27,7 +27,6 @@
         "modules": true
     },
     "plugins": [
-        "react"
     ],
     "globals": {
         "React": true
