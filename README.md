@@ -13,7 +13,7 @@ npm install till-when --save
 
 
 ```javascript
-var tillwhen = require('until-when')
+var tillwhen = require('till-when')
 
 var parsed = tillwhen.parse('9AM-11:11AM');
 console.log(parsed.begin); //'9:00 AM'
